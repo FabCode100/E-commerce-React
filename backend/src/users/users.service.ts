@@ -27,6 +27,11 @@ export class UsersService {
         });
     }
 
+    async buscarPorEmail(email: string) {
+        return this.prisma.user.findUnique({ where: { email } });
+    }
+
+
     async listarUsuarios() {
         return this.prisma.user.findMany({
             select: { id: true, nome: true, email: true, criadoEm: true },

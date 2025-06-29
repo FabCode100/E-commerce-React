@@ -40,24 +40,49 @@ model User {
   senha    String
   criadoEm DateTime @default(now())
   pedidos  Pedido[]
+  enderecos Endereco[]
 }
 
 model Pedido {
-  id          String       @id @default(auto()) @map("_id") @db.ObjectId
-  usuario     User         @relation(fields: [usuarioId], references: [id])
-  usuarioId   String       @db.ObjectId
-  criadoEm    DateTime     @default(now())
-  status      String       @default("Pendente")
-  itens       ItemPedido[]
-  total       Float
+  id              String       @id @default(auto()) @map("_id") @db.ObjectId
+  usuarioId       String       @db.ObjectId
+  usuario         User         @relation(fields: [usuarioId], references: [id])
+  enderecoId      String       @db.ObjectId
+  endereco        Endereco     @relation(fields: [enderecoId], references: [id])
+  itens           ItemPedido[]
+  total           Float
+  status          String       @default("pendente") // pendente | pago | cancelado
+  criadoEm        DateTime     @default(now())
+  pagoEm          DateTime?
+  metodoPagamento String?
 }
 
+
+
+
 model ItemPedido {
-  id          String    @id @default(auto()) @map("_id") @db.ObjectId
-  pedido      Pedido    @relation(fields: [pedidoId], references: [id])
-  pedidoId    String    @db.ObjectId
-  produto     Produto   @relation(fields: [produtoId], references: [id])
-  produtoId   String    @db.ObjectId
-  quantidade  Int
-  precoUnit   Float
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  pedidoId  String    @db.ObjectId
+  pedido    Pedido    @relation(fields: [pedidoId], references: [id])
+  produtoId String    @db.ObjectId
+  produto   Produto   @relation(fields: [produtoId], references: [id])
+  quantidade Int
+  precoUnit Float
 }
+
+model Endereco {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  usuarioId  String   @db.ObjectId
+  usuario    User     @relation(fields: [usuarioId], references: [id])
+  rua        String
+  numero     String
+  complemento String?
+  bairro     String
+  cidade     String
+  estado     String
+  cep        String
+  pedidos    Pedido[]  
+}
+
+
+
