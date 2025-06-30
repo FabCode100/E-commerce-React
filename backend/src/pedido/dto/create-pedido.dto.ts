@@ -1,15 +1,20 @@
 import { IsArray, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CreatePedidoDto {
-    @IsArray()
-    @IsNotEmpty({ each: true })
-    itens: {
-        produtoId: string;
-        quantidade: number;
-        precoUnitario: number;
-    }[];
+  
+  @IsArray()
+  @IsNotEmpty({ each: true })
+  itens: {
+    produtoId: string;
+    quantidade: number;
+    precoUnit: number;
+  }[];
 
-    @IsString()
-    @IsNotEmpty()
-    enderecoId: string; // Endereço vinculado ao pedido
+  @IsString()
+  @IsNotEmpty()
+  enderecoId: string;
+
+  @IsString()
+  @IsNotEmpty()
+  metodoPagamento: string;
 }
