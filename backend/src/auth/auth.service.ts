@@ -6,27 +6,29 @@ import * as bcrypt from 'bcrypt';
 @Injectable()
 export class AuthService {
     constructor(
-        private jwtService: JwtService,
-        private usersService: UsersService,
-    ) { }
+        private readonly jwtService: JwtService,
+        private readonly usersService: UsersService,
+    ) {}
 
     async login(email: string, senha: string) {
         const user = await this.usersService.buscarPorEmail(email);
 
-        if (!user || !(await bcrypt.compare(senha, user.senha))) {
+        if (!user) {
+            throw new UnauthorizedException('Credenciais inválidas');
+        }
+
+        const senhaValida = await bcrypt.compare(senha, user.senha);
+
+        if (!senhaValida) {
             throw new UnauthorizedException('Credenciais inválidas');
         }
 
         const payload = { sub: user.id, email: user.email };
-        const token = this.jwtService.sign(payload);
+
+        const access_token = this.jwtService.sign(payload);
 
         return {
-            token,
-            usuario: {
-                id: user.id,
-                nome: user.nome,
-                email: user.email,
-            },
+            access_token,
         };
     }
 }
